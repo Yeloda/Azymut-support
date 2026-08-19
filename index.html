@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Azymut — Assistance</title>
+<meta name="description" content="Aide et contact pour l'application Azymut, le chat en direct des chaînes de télévision françaises.">
+<style>
+  :root{
+    --bg:#0B1220; --bg2:#0F172A; --surface:#1E293B; --border:#334155;
+    --text:#F8FAFC; --muted:#94A3B8; --primary:#818CF8; --accent:#38BDF8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:radial-gradient(120% 60% at 50% -10%,#22345E 0%,#16223F 35%,#0C1426 65%,#0B1220 100%) no-repeat,var(--bg);
+    color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;padding:0 20px 64px;
+  }
+  .wrap{max-width:760px;margin:0 auto}
+  header{padding:56px 0 40px;text-align:center}
+  .logo{width:72px;height:72px;border-radius:18px;background:#1E293B;display:inline-flex;
+    align-items:center;justify-content:center;margin-bottom:20px}
+  h1{font-size:2rem;font-weight:800;letter-spacing:-.02em}
+  .tag{color:var(--muted);margin-top:10px}
+  h2{font-size:1.15rem;font-weight:700;margin:40px 0 14px;letter-spacing:-.01em}
+  h2:first-of-type{margin-top:24px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:4px 20px}
+  details{border-bottom:1px solid var(--border)}
+  details:last-child{border-bottom:0}
+  summary{cursor:pointer;padding:16px 0;font-weight:600;list-style:none;display:flex;
+    align-items:center;justify-content:space-between;gap:12px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";color:var(--primary);font-size:1.3rem;font-weight:700;flex:none}
+  details[open] summary::after{content:"–"}
+  details p{color:var(--muted);padding:0 0 16px;max-width:62ch}
+  details p+p{padding-top:0;margin-top:-8px}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .contact{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px}
+  .contact p{color:var(--muted);margin-bottom:14px}
+  .mail{display:inline-block;background:var(--primary);color:#0B1220;font-weight:700;
+    padding:12px 22px;border-radius:10px;text-decoration:none}
+  .mail:hover{text-decoration:none;opacity:.9}
+  ul.links{list-style:none;display:flex;flex-wrap:wrap;gap:10px 24px;margin-top:14px}
+  footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);
+    color:var(--muted);font-size:.875rem;text-align:center}
+  @media (max-width:520px){header{padding:40px 0 28px}h1{font-size:1.6rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo">
+      <svg width="46" height="46" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+        <circle cx="50" cy="50" r="42" stroke="#3B5BA5" stroke-width="3"/>
+        <circle cx="50" cy="8"  r="3.6" fill="#60A5FA"/>
+        <circle cx="92" cy="50" r="3.6" fill="#60A5FA"/>
+        <circle cx="8"  cy="50" r="3.6" fill="#60A5FA"/>
+        <circle cx="50" cy="92" r="3.6" fill="#60A5FA"/>
+        <path d="M50 20 L55 48 L50 52 L45 48 Z" fill="#EF4444"/>
+        <path d="M50 80 L45 52 L50 48 L55 52 Z" fill="#F1F5F9"/>
+        <circle cx="50" cy="50" r="9" fill="#2563EB"/>
+        <circle cx="50" cy="50" r="3.5" fill="#0F172A"/>
+      </svg>
+    </div>
+    <h1>Assistance Azymut</h1>
+    <p class="tag">Le chat en direct de la télé française</p>
+  </header>
+
+  <h2>Questions fréquentes</h2>
+  <div class="card">
+
+    <details open>
+      <summary>Je n'arrive pas à me connecter</summary>
+      <p>Azymut accepte trois méthodes : adresse e-mail avec mot de passe, connexion avec Apple et connexion avec Google. Si vous aviez créé votre compte avec l'une de ces méthodes, utilisez la même : un compte créé avec Apple ne possède pas de mot de passe.</p>
+      <p>Si le problème persiste, vérifiez votre connexion internet puis fermez et relancez l'application.</p>
+    </details>
+
+    <details>
+      <summary>J'ai oublié mon mot de passe</summary>
+      <p>Sur l'écran de connexion, touchez « Mot de passe oublié », saisissez votre adresse e-mail et validez. Vous recevrez un lien de réinitialisation. Pensez à consulter votre dossier de courrier indésirable si le message tarde.</p>
+    </details>
+
+    <details>
+      <summary>Comment signaler un message ou bloquer quelqu'un ?</summary>
+      <p>Dans un salon, appuyez longuement sur le message concerné. Un menu apparaît avec les options « Signaler ce message » et « Bloquer ». Une fois une personne bloquée, vous ne verrez plus ses messages.</p>
+      <p>Vous retrouvez la liste des personnes bloquées dans Paramètres, avec la possibilité de les débloquer à tout moment.</p>
+    </details>
+
+    <details>
+      <summary>Le programme TV est incorrect ou incomplet</summary>
+      <p>Les horaires proviennent d'une source de données publique mise à jour chaque jour. Des décalages ou des programmes manquants sont possibles, notamment lors des directs prolongés ou des modifications de dernière minute par la chaîne.</p>
+      <p>Si une chaîne reste durablement sans programme, signalez-le-nous par e-mail en précisant laquelle.</p>
+    </details>
+
+    <details>
+      <summary>Comment changer mon pseudo ou sa couleur ?</summary>
+      <p>Ouvrez l'onglet Profil puis « Modifier mon profil ». Vous pouvez y changer votre pseudo, choisir sa couleur d'affichage dans les salons et sélectionner le badge affiché à côté de votre nom.</p>
+    </details>
+
+    <details>
+      <summary>Comment fonctionnent les badges ?</summary>
+      <p>Les badges de progression se débloquent automatiquement selon votre nombre de messages envoyés : Débutant, Bavard, Actif, Centurion, Influenceur, Légende, Champion puis Diamant. D'autres badges récompensent l'ancienneté du compte.</p>
+      <p>Les badges spéciaux (Vérifié, Modérateur, VIP, OG) sont attribués manuellement par l'équipe et ne peuvent pas être obtenus par l'activité seule.</p>
+    </details>
+
+    <details>
+      <summary>Je ne peux plus envoyer de messages</summary>
+      <p>Trois causes possibles. Un message est limité à 500 caractères. Un délai de quelques secondes est imposé entre deux envois pour éviter le spam. Enfin, votre compte peut avoir été temporairement réduit au silence ou banni par la modération à la suite de signalements : l'application vous l'indique alors, avec le motif et la durée restante.</p>
+      <p>Si vous estimez la sanction injustifiée, écrivez-nous.</p>
+    </details>
+
+    <details>
+      <summary>Comment supprimer mon compte ?</summary>
+      <p>Ouvrez l'onglet Profil, faites défiler jusqu'en bas et touchez « Supprimer mon compte ». La suppression est définitive : votre profil, vos messages et vos favoris sont effacés et ne peuvent pas être restaurés.</p>
+    </details>
+
+    <details>
+      <summary>L'application est-elle payante ?</summary>
+      <p>Non. Azymut est entièrement gratuite, sans achat intégré ni publicité.</p>
+    </details>
+
+  </div>
+
+  <h2>Nous contacter</h2>
+  <div class="contact">
+    <p>Une question, un bug, un signalement d'abus ou une demande concernant vos données ? Écrivez-nous, nous répondons généralement sous 72 heures.</p>
+    <a class="mail" href="mailto:yelopixel.contact@gmail.com">yelopixel.contact@gmail.com</a>
+  </div>
+
+  <h2>Documents légaux</h2>
+  <div class="contact">
+    <ul class="links">
+      <li><a href="https://www.privacypolicies.com/live/ab55c5cb-ab4f-4880-95d7-80af16cb935d">Politique de confidentialité</a></li>
+      <li><a href="https://www.privacypolicies.com/live/5e1f608d-c0e6-45f6-9b4e-3aa0b5539f1c">Conditions d'utilisation</a></li>
+    </ul>
+  </div>
+
+  <footer>Azymut — application éditée par Yeloda. Les logos des chaînes appartiennent à leurs propriétaires respectifs.</footer>
+
+</div>
+</body>
+</html>
