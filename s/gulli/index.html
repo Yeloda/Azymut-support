@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rejoins le salon Gulli sur Azymut</title>
+<meta name="description" content="On commente Gulli en direct sur Azymut, le chat des chaînes de télévision françaises.">
+<meta name="robots" content="noindex,follow">
+<link rel="canonical" href="https://yeloda.github.io/Azymut-support/s/gulli/">
+<meta property="og:title" content="Rejoins le salon Gulli sur Azymut">
+<meta property="og:description" content="On commente Gulli en direct sur Azymut, le chat des chaînes de télévision françaises.">
+<meta property="og:url" content="https://yeloda.github.io/Azymut-support/s/gulli/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<style>
+:root{--bg:#0B1220;--surface:#1E293B;--border:#334155;
+  --text:#F8FAFC;--muted:#94A3B8;--primary:#818CF8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(120% 60% at 50% -10%,#22345E 0%,#16223F 35%,#0C1426 65%,#0B1220 100%) no-repeat,var(--bg);
+  color:var(--text);min-height:100vh;display:grid;place-items:center;padding:24px;
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+.card{max-width:420px;width:100%;text-align:center}
+.logo{width:80px;height:80px;border-radius:20px;background:var(--surface);
+  display:inline-grid;place-items:center;margin-bottom:24px}
+h1{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin-bottom:10px}
+h1 .channel{color:var(--primary)}
+.lede{color:var(--muted);margin-bottom:28px}
+.btns{display:flex;flex-direction:column;gap:12px}
+a.btn{display:block;padding:14px 20px;border-radius:12px;text-decoration:none;
+  font-weight:700;background:var(--primary);color:#0B1220}
+a.btn.alt{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+a.btn:hover{opacity:.9}
+.hint{margin-top:20px;font-size:.85rem;color:var(--muted)}
+.more{margin-top:28px;font-size:.85rem;color:var(--muted)}
+.more a{color:var(--primary);text-decoration:none}
+.more a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo"><svg width="48" height="48" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+      <circle cx="50" cy="50" r="42" stroke="#3B5BA5" stroke-width="3"/>
+      <circle cx="50" cy="8"  r="3.6" fill="#60A5FA"/>
+      <circle cx="92" cy="50" r="3.6" fill="#60A5FA"/>
+      <circle cx="8"  cy="50" r="3.6" fill="#60A5FA"/>
+      <circle cx="50" cy="92" r="3.6" fill="#60A5FA"/>
+    </svg></div>
+
+  <h1>Rejoins le salon <span class="channel">Gulli</span></h1>
+  <p class="lede">Azymut, c'est le chat en direct des chaînes de télé françaises. Gratuit, sans pub.</p>
+
+  <div class="btns">
+    <a class="btn" id="open-app" href="#">Ouvrir dans l'application</a>
+    <a class="btn alt" id="store" href="https://play.google.com/store/apps/details?id=com.yeloda.azymut">Télécharger l'application</a>
+  </div>
+
+  <p class="hint" id="hint">Déjà installée ? Le salon s'ouvre directement.</p>
+  <p class="more"><a href="https://yeloda.github.io/Azymut-support/programme/gulli.html">Programme Gulli du jour</a> · <a href="https://yeloda.github.io/Azymut-support/">À propos d'Azymut</a></p>
+</div>
+
+<script>
+(function () {
+  var CHANNEL_ID    = 'gulli';
+  var CHANNEL_NAMES = {"tf1":"TF1","france2":"France 2","france3":"France 3","france4":"France 4","france5":"France 5","m6":"M6","arte":"Arte","lcp":"LCP","w9":"W9","tmc":"TMC","tfx":"TFX","gulli":"Gulli","bfmtv":"BFM TV","cnews":"CNews","lci":"LCI","franceinfo":"France Info","cstar":"CStar","t18":"T18","novo19":"NOVO 19","tf1seriesfilms":"TF1 Séries Films","lequipe":"L'Équipe","6ter":"6ter","rmcstory":"RMC Story","rmcdecouverte":"RMC Découverte","cherie25":"Chérie 25","canalplus":"Canal+","eurosport1":"Eurosport 1","eurosport2":"Eurosport 2","rmcsport1":"RMC Sport 1","bein1":"beIN Sports 1","canalplusport":"Canal+ Sport"};
+  var SCHEME        = 'azymut';
+  var PACKAGE       = 'com.yeloda.azymut';
+  var IOS_STORE     = 'https://apps.apple.com/fr/search?term=azymut';
+  var ANDROID_STORE = 'https://play.google.com/store/apps/details?id=com.yeloda.azymut';
+
+  // Un identifiant venu de la chaîne de requête est une entrée non maîtrisée :
+  // il finit dans une URL et dans le DOM. On ne garde que la forme des slugs
+  // réellement utilisés, ce qui exclut d'emblée tout caractère actif.
+  function clean(value) {
+    return String(value || '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 40);
+  }
+
+  var params  = new URLSearchParams(location.search);
+  var channel = CHANNEL_ID || clean(params.get('c'));
+  var name    = CHANNEL_NAMES[channel] || channel.toUpperCase();
+
+  var nameEl = document.getElementById('channel-name');
+  if (nameEl && name) nameEl.textContent = ' ' + name;
+
+  var deepLink = channel ? SCHEME + '://chat/' + channel : SCHEME + '://';
+
+  var ua        = navigator.userAgent || '';
+  var isIOS     = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  // Un iPad sous iPadOS 13+ se déclare « Macintosh » ; l'écran tactile le
+  // trahit. Sans ce test, un iPad se verrait proposer le lien de bureau.
+  var isIPadOS  = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
+  var isAndroid = /Android/.test(ua);
+  var isApple   = isIOS || isIPadOS;
+
+  var openBtn  = document.getElementById('open-app');
+  var storeBtn = document.getElementById('store');
+  var hint     = document.getElementById('hint');
+
+  if (isAndroid) {
+    // Mécanisme natif de Chrome : si l'application est installée, l'intention
+    // l'ouvre sur le salon ; sinon Chrome suit lui-même l'URL de repli. Aucun
+    // minuteur, aucune détection approximative, et jamais de page d'erreur.
+    openBtn.href =
+      'intent://chat/' + channel + '#Intent;scheme=' + SCHEME +
+      ';package=' + PACKAGE +
+      ';S.browser_fallback_url=' + encodeURIComponent(ANDROID_STORE) +
+      ';end';
+    storeBtn.href = ANDROID_STORE;
+    storeBtn.textContent = 'Télécharger sur Google Play';
+  } else if (isApple) {
+    openBtn.href = deepLink;
+    storeBtn.href = IOS_STORE;
+    storeBtn.textContent = "Télécharger sur l'App Store";
+
+    // iOS n'offre pas d'équivalent à l'intention Android. On tente le schéma,
+    // et on part vers le magasin si rien ne s'est passé.
+    //
+    // La tentative est déclenchée par un APPUI, jamais au chargement : quand
+    // l'application est absente, Safari affiche « adresse non valide ». Le
+    // faire spontanément infligerait cette alerte à la majorité des visiteurs
+    // — ceux qui n'ont pas encore l'application, c'est-à-dire précisément le
+    // public d'un lien de partage. Après un appui volontaire, c'est un
+    // comportement attendu ; et une fois les liens universels en place, les
+    // personnes équipées ne voient plus cette page du tout.
+    openBtn.addEventListener('click', function (event) {
+      event.preventDefault();
+
+      var left = false;
+      var noteDeparture = function () { left = true; };
+
+      // Si l'application s'ouvre, la page passe en arrière-plan : c'est le
+      // seul signal fiable de succès, et il évite d'enchaîner sur le magasin
+      // alors que l'application vient de démarrer.
+      document.addEventListener('visibilitychange', noteDeparture);
+      window.addEventListener('pagehide', noteDeparture);
+
+      setTimeout(function () {
+        document.removeEventListener('visibilitychange', noteDeparture);
+        window.removeEventListener('pagehide', noteDeparture);
+        if (!left && !document.hidden) location.href = IOS_STORE;
+      }, 1500);
+
+      location.href = deepLink;
+    });
+  } else {
+    // Ordinateur : l'application n'existe que sur mobile. Proposer « ouvrir
+    // dans l'application » n'y mènerait nulle part.
+    openBtn.hidden = true;
+    storeBtn.href = ANDROID_STORE;
+    storeBtn.textContent = 'Voir Azymut sur Google Play';
+    if (hint) hint.textContent = 'Azymut est une application mobile : ouvre ce lien depuis ton téléphone pour rejoindre le salon.';
+  }
+})();
+</script>
+</body>
+</html>
