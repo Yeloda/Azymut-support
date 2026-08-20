@@ -29,8 +29,37 @@ h1 .channel{color:var(--primary)}
 .btns{display:flex;flex-direction:column;gap:12px}
 a.btn{display:block;padding:14px 20px;border-radius:12px;text-decoration:none;
   font-weight:700;background:var(--primary);color:#0B1220}
-a.btn.alt{background:var(--surface);color:var(--text);border:1px solid var(--border)}
 a.btn:hover{opacity:.9}
+/* L'attribut hidden seul ne suffit pas : la règle d'auteur display:block
+   ci-dessus l'emporte sur la feuille du navigateur. Sans cela, le bouton
+   « ouvrir dans l'application » resterait affiché sur ordinateur, où il ne
+   mène nulle part. */
+[hidden]{display:none!important}
+
+/* Badges de magasin. Les chartes d'Apple et de Google imposent la même forme :
+   marque en tête, deux lignes de texte, hauteur identique pour les deux, et
+   aucune retouche de la marque elle-même. D'où une hauteur fixe et des
+   largeurs libres plutôt qu'une grille : c'est la hauteur qui doit
+   correspondre, jamais l'encombrement total. */
+.stores{display:flex;flex-direction:row;flex-wrap:wrap;gap:12px;justify-content:center}
+.badge{flex:1 1 45%;min-width:156px;height:56px;
+  display:flex;flex-direction:row;align-items:center;justify-content:center;gap:9px;
+  padding:0 12px;border-radius:10px;background:#000;
+  border:1px solid rgba(248,250,252,.4);text-decoration:none;color:#fff}
+.badge:hover{border-color:rgba(248,250,252,.85)}
+.badge .mark{width:26px;height:26px;flex:none}
+.badge .label{display:flex;flex-direction:column;justify-content:center;
+  line-height:1.15;text-align:left}
+.badge .label small{font-size:.62rem;letter-spacing:.01em;white-space:nowrap}
+.badge .label strong{font-size:1.1rem;font-weight:500;letter-spacing:-.01em;
+  white-space:nowrap}
+/* Sur iPhone et iPad, l'App Store passe en tête. */
+.stores.apple-first #store-ios{order:-1}
+/* Deux badges côte à côte demandent 324 px ; sous 380 px de large, la marge du
+   corps est reprise pour les garder sur une rangée plutôt que de les empiler.
+   En dessous, ils passent l'un sous l'autre : mieux vaut une colonne que des
+   libellés tronqués. */
+@media (max-width:380px){body{padding:16px}}
 .hint{margin-top:20px;font-size:.85rem;color:var(--muted)}
 .more{margin-top:28px;font-size:.85rem;color:var(--muted)}
 .more a{color:var(--primary);text-decoration:none}
@@ -52,7 +81,37 @@ a.btn:hover{opacity:.9}
 
   <div class="btns">
     <a class="btn" id="open-app" href="#">Ouvrir dans l'application</a>
-    <a class="btn alt" id="store" href="https://play.google.com/store/apps/details?id=com.yeloda.azymut">Télécharger l'application</a>
+    <div class="stores" id="stores"><a class="badge" id="store-android" href="https://play.google.com/store/apps/details?id=com.yeloda.azymut"
+       aria-label="Télécharger Azymut sur Google Play">
+      <svg class="mark" viewBox="0 0 512 512" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="gp-b" x1="105" y1="0" x2="105" y2="512" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#00E2FF"/><stop offset="1" stop-color="#00A0FF"/>
+          </linearGradient>
+          <linearGradient id="gp-y" x1="318" y1="256" x2="492" y2="256" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#FFE000"/><stop offset="1" stop-color="#FF9C00"/>
+          </linearGradient>
+          <linearGradient id="gp-r" x1="104" y1="13" x2="386" y2="175" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#FF3A44"/><stop offset="1" stop-color="#C31162"/>
+          </linearGradient>
+          <linearGradient id="gp-g" x1="104" y1="499" x2="386" y2="337" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#32A071"/><stop offset="1" stop-color="#00E676"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#gp-b)" d="M47 0C34 6.8 25.3 19.2 25.3 35.3v441.4c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0z"/>
+        <path fill="url(#gp-r)" d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1z"/>
+        <path fill="url(#gp-y)" d="m472.2 225.6-88.6-51.3-65.2 65.3 65.2 65.3 90.5-51.3c27.1-21.3 27.1-56.7-1.9-78z"/>
+        <path fill="url(#gp-g)" d="M104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/>
+      </svg>
+      <span class="label"><small>DISPONIBLE SUR</small><strong>Google Play</strong></span>
+    </a>
+    <a class="badge" id="store-ios" href="https://apps.apple.com/fr/search?term=azymut"
+       aria-label="Télécharger Azymut dans l'App Store">
+      <svg class="mark" viewBox="0 0 384 512" aria-hidden="true" focusable="false">
+        <path fill="#fff" d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+      </svg>
+      <span class="label"><small>Télécharger dans l&rsquo;</small><strong>App Store</strong></span>
+    </a></div>
   </div>
 
   <p class="hint" id="hint">Déjà installée ? Le salon s'ouvre directement.</p>
@@ -93,8 +152,14 @@ a.btn:hover{opacity:.9}
   var isApple   = isIOS || isIPadOS;
 
   var openBtn  = document.getElementById('open-app');
-  var storeBtn = document.getElementById('store');
+  var stores   = document.getElementById('stores');
   var hint     = document.getElementById('hint');
+
+  // Les deux badges sont dans la page et y restent : une page de partage est
+  // aussi transférée d'un téléphone à l'autre, et masquer le magasin de l'autre
+  // système ferait disparaître le lien pour la personne suivante. Seul l'ordre
+  // change, pour placer en tête le magasin du visiteur.
+  if (isApple && stores) stores.classList.add('apple-first');
 
   if (isAndroid) {
     // Mécanisme natif de Chrome : si l'application est installée, l'intention
@@ -105,12 +170,8 @@ a.btn:hover{opacity:.9}
       ';package=' + PACKAGE +
       ';S.browser_fallback_url=' + encodeURIComponent(ANDROID_STORE) +
       ';end';
-    storeBtn.href = ANDROID_STORE;
-    storeBtn.textContent = 'Télécharger sur Google Play';
   } else if (isApple) {
     openBtn.href = deepLink;
-    storeBtn.href = IOS_STORE;
-    storeBtn.textContent = "Télécharger sur l'App Store";
 
     // iOS n'offre pas d'équivalent à l'intention Android. On tente le schéma,
     // et on part vers le magasin si rien ne s'est passé.
@@ -146,8 +207,6 @@ a.btn:hover{opacity:.9}
     // Ordinateur : l'application n'existe que sur mobile. Proposer « ouvrir
     // dans l'application » n'y mènerait nulle part.
     openBtn.hidden = true;
-    storeBtn.href = ANDROID_STORE;
-    storeBtn.textContent = 'Voir Azymut sur Google Play';
     if (hint) hint.textContent = 'Azymut est une application mobile : ouvre ce lien depuis ton téléphone pour rejoindre le salon.';
   }
 })();
