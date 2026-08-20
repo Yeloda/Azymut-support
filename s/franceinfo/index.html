@@ -30,11 +30,6 @@ h1 .channel{color:var(--primary)}
 a.btn{display:block;padding:14px 20px;border-radius:12px;text-decoration:none;
   font-weight:700;background:var(--primary);color:#0B1220}
 a.btn:hover{opacity:.9}
-/* L'attribut hidden seul ne suffit pas : la règle d'auteur display:block
-   ci-dessus l'emporte sur la feuille du navigateur. Sans cela, le bouton
-   « ouvrir dans l'application » resterait affiché sur ordinateur, où il ne
-   mène nulle part. */
-[hidden]{display:none!important}
 
 /* Badges de magasin. Les chartes d'Apple et de Google imposent la même forme :
    marque en tête, deux lignes de texte, hauteur identique pour les deux, et
@@ -80,7 +75,6 @@ a.btn:hover{opacity:.9}
   <p class="lede">Azymut, c'est le chat en direct des chaînes de télé françaises. Gratuit, sans pub.</p>
 
   <div class="btns">
-    <a class="btn" id="open-app" href="#">Ouvrir dans l'application</a>
     <div class="stores" id="stores"><a class="badge" id="store-android" href="https://play.google.com/store/apps/details?id=com.yeloda.azymut"
        target="_blank" rel="noopener"
        aria-label="Télécharger Azymut sur Google Play (nouvel onglet)">
@@ -114,6 +108,7 @@ a.btn:hover{opacity:.9}
       </svg>
       <span class="label"><small>Télécharger dans l&rsquo;</small><strong>App Store</strong></span>
     </a></div>
+    <a class="btn" id="open-app" href="#">Ouvrir dans l'application</a>
   </div>
 
   <p class="hint" id="hint">Déjà installée ? Le salon s'ouvre directement.</p>
@@ -206,9 +201,11 @@ a.btn:hover{opacity:.9}
       location.href = deepLink;
     });
   } else {
-    // Ordinateur : l'application n'existe que sur mobile. Proposer « ouvrir
-    // dans l'application » n'y mènerait nulle part.
-    openBtn.hidden = true;
+    // Ordinateur : le lien profond reste posé — un navigateur sans gestionnaire
+    // pour le schéma ne fera rien, mais le bouton doit exister partout, sans
+    // quoi la page n'offre plus aucune issue à qui a déjà l'application. Le
+    // repère de bas de page dit pourquoi il peut rester sans effet ici.
+    openBtn.href = deepLink;
     if (hint) hint.textContent = 'Azymut est une application mobile : ouvre ce lien depuis ton téléphone pour rejoindre le salon.';
   }
 })();
