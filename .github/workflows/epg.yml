@@ -1,0 +1,66 @@
+# Publication quotidienne du guide TV consommé par l'application Azymut.
+#
+# POURQUOI CE WORKFLOW VIT DANS AZYMUT-SUPPORT
+# --------------------------------------------
+# Le dépôt applicatif est privé : ses minutes GitHub Actions sont décomptées,
+# et il n'a pas les droits d'écriture sur ce dépôt-ci. Azymut-support est
+# public — les Actions y sont gratuites et sans quota — et c'est lui qui sert
+# GitHub Pages. Le guide est donc produit là où il est publié, sans jeton
+# d'accès inter-dépôts à gérer ni à faire expirer.
+#
+# CE QUI EST GARANTI
+# ------------------
+# `build-epg-json.mjs` s'interrompt avec un code non nul si le guide produit
+# est vide, amputé d'une chaîne, ou anormalement court. Rien n'est alors
+# commité : Pages continue de servir le guide de la veille. Une panne de la
+# source est donc invisible pour les utilisateurs tant qu'elle dure moins que
+# la tolérance du cache client.
+name: Guide TV
+
+on:
+  schedule:
+    # La source se régénère vers 04:39 UTC. On passe après, avec de la marge.
+    - cron: '30 5 * * *'
+  workflow_dispatch:
+
+# Deux exécutions simultanées commiteraient le même fichier et l'une des deux
+# échouerait au push. Les déclenchements manuels pendant le cron sont réels.
+concurrency:
+  group: guide-tv
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Seule dépendance du script. `--no-save` évite d'imposer un
+      # package.json à un dépôt qui n'est qu'un site statique.
+      - name: Installer fast-xml-parser
+        run: npm install --no-save --no-audit --no-fund fast-xml-parser@^5.11.0
+
+      - name: Construire le guide
+        run: node scripts/build-epg-json.mjs epg/guide.json
+
+      - name: Publier si le guide a changé
+        run: |
+          if git diff --quiet -- epg/guide.json; then
+            echo "Guide inchangé — rien à publier."
+            exit 0
+          fi
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add epg/guide.json
+          git commit -m "Guide TV du $(date -u +%Y-%m-%d)"
+          git push
