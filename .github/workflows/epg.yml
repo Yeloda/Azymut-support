@@ -54,13 +54,18 @@ jobs:
 
       - name: Publier si le guide a changé
         run: |
-          if git diff --quiet -- epg/guide.json; then
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add epg/guide.json
+
+          if git diff --cached --quiet; then
             echo "Guide inchangé — rien à publier."
             exit 0
           fi
 
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add epg/guide.json
           git commit -m "Guide TV du $(date -u +%Y-%m-%d)"
           git push
+
+          echo "Publié : $(du -h epg/guide.json | cut -f1)"
+
