@@ -97,7 +97,12 @@ export const CHANNELS = [
   // Sport
   { epgId: 'Eurosport 1.fr', match: 'Eurosport 1' },
   { epgId: 'Eurosport 2.fr', match: 'Eurosport 2' },
-  { epgId: 'Infosport+.fr', match: 'Infosport+' },
+  // Infosport+ a été rebaptisée Canal+ Sport 360. La source déclare encore
+  // l'ancienne entrée, mais n'y publie plus aucun programme depuis le
+  // 8 septembre 2026 : ils sont désormais sous le nouveau nom. `epgId` ne
+  // bouge pas — c'est la clé que les versions DÉJÀ PUBLIÉES de l'application
+  // demandent, et elles ne seront jamais remises à jour.
+  { epgId: 'Infosport+.fr', match: 'Canal+ Sport 360' },
   { epgId: 'RMC Sport 1.fr', match: 'RMC Sport 1' },
   { epgId: 'RMC Sport 2.fr', match: 'RMC Sport Live 2' },
   { epgId: 'beIN SPORTS 1.fr', match: 'beIN SPORTS 1' },
@@ -358,35 +363,79 @@ export function buildGuide(xml, { now = Date.now() } = {}) {
 }
 
 /**
- * Refuse de publier un guide vide ou amputé.
+ * Nombre de chaînes que le guide peut perdre sans cesser d'être publiable.
+ *
+ * La source agrège quatre fournisseurs, et il lui arrive d'en perdre un le
+ * temps d'une journée : la chaîne reste déclarée dans le flux, simplement sans
+ * aucun programme. Refuser de publier pour autant fige le guide ENTIER sur
+ * GitHub Pages — les trente-quatre autres chaînes comprises — jusqu'à ce qu'un
+ * humain s'en aperçoive. Or le guide ne couvre que trois ou quatre jours :
+ * quelques jours de blocage et les utilisateurs n'ont plus rien du tout.
+ *
+ * Une chaîne perdue, à l'inverse, s'affiche sans « programme en cours » et
+ * revient d'elle-même le lendemain. Le compromis penche donc du côté de la
+ * publication tant que la perte reste marginale — et `warn()` fait remonter
+ * les chaînes sacrifiées, pour qu'une perte DURABLE (une chaîne renommée à la
+ * source) finisse par se voir.
+ */
+const MAX_DEGRADED_CHANNELS = 3;
+
+/** En dessous, ce n'est plus un guide amputé mais un guide cassé. */
+const MIN_PROGRAMS = 2000;
+
+/**
+ * Refuse de publier un guide vide ou gravement amputé.
  *
  * Un JSON valide mais creux est plus dangereux qu'un échec : il écraserait sur
  * GitHub Pages un guide correct, et les clients le mettraient en cache pour
  * vingt-quatre heures. Mieux vaut laisser en ligne celui de la veille.
+ *
+ * Ce raisonnement ne vaut cependant que pour un guide RÉELLEMENT creux : à
+ * partir d'une chaîne manquante sur trente-cinq, c'est le guide de la veille
+ * qui devient le plus mauvais des deux, puisqu'il vieillit sans se renouveler.
+ * D'où le seuil, plutôt que le tout ou rien.
+ *
+ * Retourne les chaînes tolérées, à signaler par l'appelant.
  */
 export function assertUsable({ guide, missing }) {
-  const problems = [];
-
-  if (missing.length > 0) {
-    problems.push(`chaînes introuvables dans le flux : ${missing.join(', ')}`);
-  }
-
   const empty = Object.entries(guide.channels)
     .filter(([, channel]) => channel.p.length === 0)
     .map(([epgId]) => epgId);
 
-  if (empty.length > 0) {
-    problems.push(`chaînes sans aucun programme : ${empty.join(', ')}`);
+  const degraded = [...missing, ...empty];
+  const problems = [];
+
+  if (degraded.length > MAX_DEGRADED_CHANNELS) {
+    if (missing.length > 0) {
+      problems.push(`chaînes introuvables dans le flux : ${missing.join(', ')}`);
+    }
+    if (empty.length > 0) {
+      problems.push(`chaînes sans aucun programme : ${empty.join(', ')}`);
+    }
   }
 
   const total = Object.values(guide.channels).reduce((n, c) => n + c.p.length, 0);
-  if (total < 2000) {
+  if (total < MIN_PROGRAMS) {
     problems.push(`seulement ${total} programmes au total (attendu : plusieurs milliers)`);
   }
 
   if (problems.length > 0) {
     throw new Error(`Guide inexploitable :\n  - ${problems.join('\n  - ')}`);
   }
+
+  return degraded;
+}
+
+/**
+ * Signale une anomalie tolérée.
+ *
+ * En CI, `::warning::` accroche le message au récapitulatif du job. Sans lui,
+ * une chaîne perdue durablement ne figurerait que dans le journal d'une
+ * exécution RÉUSSIE — que personne n'ouvre — et disparaîtrait du guide sans
+ * que quiconque le remarque.
+ */
+function warn(message) {
+  console.log(process.env.GITHUB_ACTIONS ? `::warning::${message}` : `  ⚠ ${message}`);
 }
 
 async function download(url) {
@@ -455,7 +504,15 @@ async function main() {
   }
 
   const result = buildGuide(xml);
-  assertUsable(result);
+  const degraded = assertUsable(result);
+
+  if (degraded.length > 0) {
+    warn(
+      `Guide publié sans ${degraded.length} chaîne(s) : ${degraded.join(', ')}. ` +
+        `Si la même chaîne manque plusieurs jours de suite, elle a probablement ` +
+        `été renommée à la source — corriger \`match\` dans CHANNELS.`
+    );
+  }
 
   const json = JSON.stringify(result.guide);
   await mkdir(path.dirname(outPath), { recursive: true });
